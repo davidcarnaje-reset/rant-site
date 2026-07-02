@@ -18,8 +18,13 @@
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
-    # Send Requests To Front Controller...
+    # --- KRITIKAL NA PAGBABAGO PARA SA HOSTINGER SHARED HOSTING ---
+    # Kung ang request ay hindi nagsisimula sa /public folder, i-rewrite papunta doon
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+
+    # Kung sakaling pumasok na sa public pero wala ang file, ipasa sa main public index.php
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^ index.php [L]
+    RewriteRule ^ public/index.php [L]
 </IfModule>

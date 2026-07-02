@@ -80,11 +80,68 @@ new class extends Component {
             return;
         }
 
-        // Profanity Filter
-        $badWords = ['gago', 'bobo', 'tanga', 'puta', 'leche', 'pakyu', 'fuck', 'shit'];
-        $cleanText = $this->comment_text;
+        // 1. Leetspeak & Symbol Normalization (for verification block)
+        $normalized = preg_replace('/[\s\-_.*]/', '', $this->comment_text);
+        $leetReplacements = [
+            '0' => 'o',
+            '4' => 'a',
+            '1' => 'i',
+            '@' => 'a',
+            '$' => 's',
+            '3' => 'e',
+            '7' => 't',
+        ];
+        $normalized = strtr($normalized, $leetReplacements);
+        $normalized = strtolower($normalized);
+
+        // 2. Comprehensive Anti-Spam Bad Words List
+        $badWords = [
+            'gago', 'gagu', 'gaga', 'bobo', 'bubu', 'tanga', 'puta', 'leche', 'pakshet', 'pakyu', 'ulol', 'fuck', 'shit', 'asshole', 'bitch', 'kupal',
+            'tangina', 'tngina', 'tynga', 'pukinangina', 'kingina',
+            'borat', 'burat',
+            'tado', 'tarantado', 'trntd',
+            'salsal', 'jakol', 'kantot', 'iyot', 'hindot',
+            'bayag', 'tite', 'pekpek', 'puki', 'kiki'
+        ];
+
+        $containsBadWord = false;
         foreach ($badWords as $word) {
-            $cleanText = str_ireplace($word, str_repeat('*', strlen($word)), $cleanText);
+            if (str_contains($normalized, $word)) {
+                $containsBadWord = true;
+                break;
+            }
+        }
+
+        $cleanText = $this->comment_text;
+
+        // 3. Regex-based Exact or Partial Match Censorship on the original text
+        if ($containsBadWord) {
+            $leetMap = [
+                'a' => '[a4@]',
+                'o' => '[o0]',
+                'i' => '[i1]',
+                's' => '[s$]',
+                'e' => '[e3]',
+                't' => '[t7]',
+            ];
+
+            foreach ($badWords as $word) {
+                $chars = str_split($word);
+                $patternParts = [];
+                foreach ($chars as $char) {
+                    $lowerChar = strtolower($char);
+                    if (isset($leetMap[$lowerChar])) {
+                        $patternParts[] = $leetMap[$lowerChar];
+                    } else {
+                        $patternParts[] = preg_quote($char, '/');
+                    }
+                }
+                $pattern = '/' . implode('[\s\-_.*]*', $patternParts) . '/i';
+
+                $cleanText = preg_replace_callback($pattern, function($matches) {
+                    return str_repeat('*', strlen($matches[0]));
+                }, $cleanText);
+            }
         }
 
         Comment::create([
@@ -100,7 +157,7 @@ new class extends Component {
     }
 }; ?>
 
-<div class="w-full max-w-xl mx-auto space-y-8">
+<div class="w-full space-y-8">
     <!-- Story & Voting Card (Newsprint Broadsheet Column Card) -->
     <div class="p-8 bg-[#F9F9F7] text-[#111111] border-4 border-[#111111] relative overflow-hidden transition-all duration-300">
         

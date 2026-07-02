@@ -8,4 +8,10 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    server: {
+        host: true,
+        hmr: {
+            host: '192.168.2.178', // Ang Local IP ng PC mo
+        },
+    },
 });

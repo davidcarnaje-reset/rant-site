@@ -41,7 +41,7 @@
     <body class="min-h-screen relative overflow-x-hidden selection:bg-[#111111] selection:text-[#F9F9F7] antialiased">
         <div class="min-h-screen flex flex-col justify-between relative z-10">
             <!-- Header/Navbar -->
-            <header class="w-full max-w-4xl mx-auto px-6 py-6 flex items-center justify-between border-b-4 border-[#111111] bg-[#F9F9F7]">
+            <header class="w-full max-w-4xl mx-auto px-4 py-6 flex items-center justify-between border-b-4 border-[#111111] bg-[#F9F9F7]">
                 <a href="/" class="flex items-center gap-3 transition-transform duration-200 hover:scale-[1.01]">
                     <span class="text-3xl">⚖️</span>
                     <div>
@@ -58,8 +58,8 @@
             </header>
 
             <!-- Main Content Container -->
-            <main class="w-full flex-grow flex items-center justify-center py-10 px-6">
-                <div class="w-full max-w-2xl">
+            <main class="w-full max-w-4xl mx-auto flex-grow py-10 px-4">
+                <div class="w-full">
                     <!-- Navigation / Breadcrumbs -->
                     <div class="mb-6 flex items-center gap-2 font-mono text-[10px] uppercase text-[#111111]/70 font-bold border-b border-[#111111]/20 pb-2">
                         <a href="/" class="hover:underline">Home</a>
